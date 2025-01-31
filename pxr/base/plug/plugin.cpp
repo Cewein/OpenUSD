@@ -271,7 +271,7 @@ PlugPlugin::_LoadWithDependents(_SeenPlugins *seenPlugins)
 
         // Load any dependencies.
         JsObject dependencies = GetDependencies();
-        for(auto& i : dependencies) {
+        for(const auto& i : dependencies) {
             string baseTypeName = i.first;
             TfType baseType = TfType::FindByName(baseTypeName);
 
@@ -428,7 +428,7 @@ PlugPlugin::_GetAllPlugins()
     std::lock_guard<std::mutex> lock(_allPluginsMutex);
     PlugPluginPtrVector plugins;
     plugins.reserve(_allPlugins->size());
-    for(auto& it: *_allPlugins) {
+    for(const auto& it: *_allPlugins) {
         plugins.push_back(TfCreateWeakPtr(it.second.get()));
     }
     return plugins;
@@ -473,7 +473,7 @@ PlugPlugin::DeclaresType(const TfType& type, bool includeSubclasses) const
     if (const JsValue* typesEntry = TfMapLookupPtr(_dict, "Types")) {
         if (typesEntry->IsObject()) {
             const JsObject& typesDict = typesEntry->GetJsObject();
-            for(auto& it: typesDict) {
+            for(const auto& it: typesDict) {
                 const TfType typeFromPlugin = TfType::FindByName(it.first);
                 const bool match = 
                     (includeSubclasses ? 
@@ -518,7 +518,7 @@ PlugPlugin::_DeclareAliases( TfType t, const JsObject & metadata )
 
     const JsObject& aliasDict = i->second.GetJsObject();
 
-    for(auto& aliasIt: aliasDict) {
+    for(const auto& aliasIt: aliasDict) {
 
         if (!aliasIt.second.IsString()) {
             TF_WARN("Expected string for alias name, but found %s",
@@ -542,7 +542,7 @@ PlugPlugin::_DeclareTypes()
         const JsObject& types = typesValue.GetJsObject();
 
         // Declare TfTypes for all the types found in the plugin.
-        for(auto& i: types) {
+        for(const auto& i: types) {
             if (i.second.IsObject()) {
                 _DeclareType(i.first, i.second.GetJsObject());
             }
@@ -589,13 +589,13 @@ PlugPlugin::_DeclareType(
     } else {
         // Make sure that the bases mentioned in the plugin
         // metadata are among them.
-        for(TfType& base: basesVec) {
+        for(const TfType& base: basesVec) {
             std::string const &baseName = base.GetTypeName();
             if (std::find(existingBases.begin(), existingBases.end(),
                           base) == existingBases.end()) {
                 // Our expected base was not found.
                 std::string basesStr;
-                for(TfType& j: existingBases)
+                for(const TfType& j: existingBases)
                     basesStr += j.GetTypeName() + " ";
                 TF_CODING_ERROR(
                     "The metadata for plugin '%s' defined in %s declares "

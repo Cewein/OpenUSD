@@ -29,7 +29,7 @@ static dict
 _ConvertDict( const JsObject & dictionary )
 {
     dict result;
-    for(auto& i : dictionary) {
+    for(const auto& i : dictionary) {
         const string & key = i.first;
         const JsValue & val = i.second;
 
