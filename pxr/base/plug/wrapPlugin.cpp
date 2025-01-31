@@ -29,9 +29,9 @@ static dict
 _ConvertDict( const JsObject & dictionary )
 {
     dict result;
-    TF_FOR_ALL(i, dictionary) {
-        const string & key = i->first;
-        const JsValue & val = i->second;
+    for(auto& i : dictionary) {
+        const string & key = i.first;
+        const JsValue & val = i.second;
 
         result[key] = JsConvertToContainerType<object, dict>(val);
     }
